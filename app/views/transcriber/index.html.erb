@@ -3,7 +3,32 @@ https://s3.amazonaws.com/skunathtasks/2_19590224-argument-1.mp3
 	<%= stylesheet_link_tag "jplayer.blue.monday", :media => "all" %>
 
   <script type="text/javascript">
+    function play_segment(start_time) {
+    	$("#jquery_jplayer_1").jPlayer("play", start_time);
+    	
+    	// check to see what the range of audio would be...
+    	temp_sorted = Project.segments.sort(function(a,b) { return parseFloat(a) - parseFloat(b) } )
+    	if (temp_sorted.indexOf(start_time) < (temp_sorted.length - 1)) {
+    		end_time = temp_sorted[temp_sorted.indexOf(start_time) + 1];
+    		
+    		
+    		$("#jquery_jplayer_1").bind($.jPlayer.event.timeupdate, function(event) { 
+			    if(event.jPlayer.status.currentTime > end_time) { 
+			        $(this).jPlayer("pause");
+			        // need to unbind so as to be able to continue to play...
+			        $("#jquery_jplayer_1").unbind();
+			    } 
+			}); 
+			    		
+    	}
+    	
+    	 
+    }
+    var Project = {};
     $(document).ready(function(){
+    	Project.segments = [];
+    	
+    	
     	$.jPlayer.timeFormat.showHour = true;
       $("#jquery_jplayer_1").jPlayer({
         ready: function () {
@@ -21,11 +46,16 @@ https://s3.amazonaws.com/skunathtasks/2_19590224-argument-1.mp3
       });
       
       
-      $(this).jPlayer.timeFormat.showHour = true;
+      
     });
 	    
 	$(document).keypress(function (e) {
-	    
+	    if (!$("#jquery_jplayer_1").data("jPlayer").status.paused) {
+	    	current_time = $("#jquery_jplayer_1").data("jPlayer").status.currentTime;
+	    	Project.segments.push(current_time);
+	    	
+	    	$("#transcription").append("<a href='javascript:play_segment(" + current_time + ");'>Play at " + current_time + "</a><br><br>");
+	    }
 	});
     
   </script>
@@ -71,3 +101,10 @@ https://s3.amazonaws.com/skunathtasks/2_19590224-argument-1.mp3
       </div>
     </div>
   </div>
+
+<div id="transcription">
+	
+
+	
+</div>
+
