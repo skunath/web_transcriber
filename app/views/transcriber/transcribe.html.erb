@@ -1,6 +1,23 @@
 	<%= stylesheet_link_tag "jplayer.blue.monday", :media => "all" %>
 
   <script type="text/javascript">
+  	function cut_time(e) {
+  		if (!$("#jquery_jplayer_1").data("jPlayer").status.paused) {
+	    	
+	    	if (e.which == 0){
+	    	
+		    	current_time = $("#jquery_jplayer_1").data("jPlayer").status.currentTime;
+		    	Project.segments.push(current_time);
+		    	
+		    	$("#transcription").append("<div class='well well-large'><a href='javascript:play_segment(" + current_time + ");'>Play at " + current_time + "</a><br><br><textarea cols=2000 rows='5'></textarea><div class='btn-group'><button class='btn'>Action</button><button class='btn dropdown-toggle' data-toggle='dropdown'><span class='caret'></span></button><ul class='dropdown-menu'><li>test</li></ul></div></div>");
+			}
+	    }
+  		
+  		
+  	}
+  
+  
+  
     function play_segment(start_time) {
     	$("#jquery_jplayer_1").jPlayer("play", start_time);
     	
@@ -48,15 +65,21 @@
     });
 	    
 	$(document).keypress(function (e) {
-	    if (!$("#jquery_jplayer_1").data("jPlayer").status.paused) {
-	    	current_time = $("#jquery_jplayer_1").data("jPlayer").status.currentTime;
-	    	Project.segments.push(current_time);
-	    	
-	    	$("#transcription").append("<a href='javascript:play_segment(" + current_time + ");'>Play at " + current_time + "</a><br><br>");
-	    }
+	    cut_time(e);
 	});
     
   </script>
+
+<h2>File: <%= @audio_file.name%></h2>
+
+<table class="table table-bordered">
+	<tr><td>Length:</td>
+		<td><%= @audio_file.length.strftime("%H:%M:%S") %></td>
+	</tr>
+	<tr><td>Created:</td>
+		<td><%= @audio_file.created_at.strftime("%m/%d/%Y")  %></td>
+	</tr>
+</table>
 
 
 <div id="jquery_jplayer_1" class="jp-jplayer"></div>

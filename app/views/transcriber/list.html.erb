@@ -1,0 +1,23 @@
+Audio Files in System:
+<br>
+<br>
+
+<table class="table table-condensed table-hover">
+	<thead>
+		<tr>
+			<th>Name</th>
+			<th>Date Created</th>
+			<th>Length</th>
+		</tr>
+	</thead>
+	
+	<% for file in @audio_file_listing %>
+	<tr <% if file.state == 0 %>class="error"<%elsif file.state == 1%>class="warning"<%elsif file.state == 2%>class="success"<% end %>>
+	    <td><%= link_to file.name, :action => "transcribe", :controller => "transcriber", :id => file.id %></td>
+	    <td><%= file.created_at.strftime("%m/%d/%Y") %></td>
+	    <td><%= file.length.strftime("%H:%M:%S") %></td>
+	    <td><% if file.state == 0 %>Submitted<%elsif file.state == 1%>Transcribing<%elsif  file.state == 2%>Completed<% end %></td>
+	    
+	</tr>
+	<% end %>
+</table>
